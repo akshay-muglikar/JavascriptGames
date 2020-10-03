@@ -1,0 +1,176 @@
+<html>
+
+<canvas id="game" width="800" height="800"></canvas>
+<script>
+	
+	var canvas;
+	var canvasContext;	
+	var ballx = 50;
+	var bally = 50;
+	
+	var speedx = 10;
+	var speedy = 5;
+	
+	var userY = 250;
+	var userBat = 100;
+	
+	var compY = 250;
+	var compBat = 100;
+	
+	var userScore =0;
+	var compScore =0;
+	
+	var batWidth =10;
+	
+	var WIN =3;
+	var stop = false;
+	
+	function calcMouse(evt){
+		var rect = canvas.getBoundingClientRect();
+		var root = document.documentElement;
+		var x = evt.clientX - rect.left - root.scrollLeft;
+		var y = evt.clientY - rect.top - root.scrollTop;
+		
+		return {
+			x:x,y:y
+		}
+	}
+	window.onload = function(){
+		canvas =  document.getElementById('game');
+		canvasContext = canvas.getContext('2d');
+		var fps = 30;
+		setInterval(function(){
+			
+			move();
+			draw();
+		}, 1000/fps);
+		
+		canvas.addEventListener('mousemove', function(evt){
+			var obj = calcMouse(evt);
+			userY = obj.y - userBat/2;
+		});
+		
+		canvas.addEventListener('mousedown', function(evt){
+			restart();
+					
+		});
+		
+	}
+	function restart(){
+		if(stop){
+			speedx = 10;
+			speedy = 5;
+			userScore=0;
+			compScore=0;
+			ballx  =canvas.width/2;
+			bally =canvas.height/2;
+			stop=false;
+		}
+	
+	}
+	function reset(){
+		if(userScore >= WIN || compScore >=WIN){
+			stop=true;
+		}
+		
+		speedx  = -speedx;
+		
+		ballx  =canvas.width/2;
+		bally =canvas.height/2;
+		
+	}
+	
+	function compMove(){
+		var cent = compY +compBat/2;
+		if(cent < bally-35){
+			compY  = compY +6;
+		}
+		else if(cent > bally+35){
+			compY = compY-6;
+		}
+	}
+		
+	function move(){
+		if(stop){
+			drawRect(0,0,canvas.width,canvas.height,'black' );
+			canvasContext.fillStyle = 'white';
+			canvasContext.fillText("Click to CONTiNUE ", 100, 500);
+			if(userScore >= WIN ) {
+				canvasContext.fillText("You won ", 100, 200);
+			}else if(compScore >=WIN){
+				canvasContext.fillText("Right player Won", 100, 200);
+			}
+			return;
+		}
+		compMove();
+		ballx =ballx+speedx;
+		bally = bally + speedy
+		if( ballx < 0){
+			if(bally > userY && bally< userY+userBat){
+				speedx  = -speedx;
+				
+				var deltaY = bally - (userY +userBat/2);
+				speedy = deltaY *0.35; 
+			}else{
+				compScore++;
+				reset();
+			}
+			
+		}
+		if(ballx > canvas.width){
+			if(bally > compY && bally< compY+userBat){
+				speedx  = -speedx;
+				
+				var deltaY = bally - (compY + compBat/2);
+				speedy = deltaY *0.35; 
+				
+			}else{
+				userScore++;
+				reset();
+			}
+			
+		}
+		
+		if(bally > canvas.height || bally<0){
+			speedy  = -speedy;
+		}
+		
+		
+	}
+	function draw(){
+		
+		if(stop){
+			return;
+		}
+		drawRect(0,0,canvas.width,canvas.height,'black' );
+		drawRect(0,userY,batWidth,userBat,'white' );
+		
+		drawRect(canvas.width-batWidth,compY,batWidth,compBat,'white' );
+		drawNet();
+		drawCircle(ballx, bally, 10 ,'white' );
+		
+		canvasContext.fillText("USER SCORE " + userScore, 100, 100);
+		canvasContext.fillText("Comp SCORE " + compScore, canvas.width - 100, 100);
+		
+		
+	} 
+	
+	function drawCircle(x, y, rad, color) {
+		canvasContext.fillStyle = 'white';
+		canvasContext.beginPath();
+		canvasContext.arc(x, y, rad, 0, Math.PI*2, true);
+		canvasContext.fill();
+	}
+	
+	function drawRect(x, y, width, height, color) {
+		canvasContext.fillStyle = color;
+		canvasContext.fillRect(x,y,width,height);
+	}
+	
+	function drawNet(){
+		for(var i=0;i<canvas.height;i+=40){
+			drawRect(canvas.width/2-1, i, 2 , 20, 'white');
+		}
+	}
+</script
+</html>
