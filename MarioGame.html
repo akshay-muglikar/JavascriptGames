@@ -1,0 +1,138 @@
+<html>
+
+<canvas id="game" width="800" height="600"></canvas>
+<script>
+	
+	var canvas;
+	var canvasContext;	
+	
+	
+	function calcMouse(evt){
+		
+	}
+	window.onload = function(){
+		canvas =  document.getElementById('game');
+		canvasContext = canvas.getContext('2d');
+		var fps = 30;
+		setInterval(function(){
+			drawBody();
+		}, 1000/fps);
+		
+		canvas.addEventListener('click', function(evt){
+				jump=true;		
+		});
+			
+	}
+	var jump = false;
+	function restart(){
+		
+	
+	}
+	function reset(){
+	
+	}
+	
+	function compMove(){
+		
+	}
+	var contact = false;
+	
+	var imgTag = new Image();
+	imgTag.src = "Base.JPG";   // load image
+	 
+	function draw(){
+		canvasContext.fillStyle = 'black';
+		canvasContext.fillText("Click to Jump ", 100, 100);
+		canvasContext.fillStyle = 'white';
+		
+		
+		
+	} 
+	
+	function drawCircle(x, y, rad, color) {
+		canvasContext.fillStyle = 'white';
+		canvasContext.beginPath();
+		canvasContext.arc(x, y, rad, 0, Math.PI*2, true);
+		canvasContext.fill();
+	}
+	
+	function drawRect(x, y, width, height, color) {
+		canvasContext.fillStyle = color;
+		canvasContext.fillRect(x,y,width,height);
+	}
+	var ingno=1;
+	var add = 1;
+	var frame=0;
+	var jumpframe=0;
+	function drawBody(){
+	
+		if(frame%2==0){
+		
+		drawRect(0,0,canvas.width,canvas.height,'white' );
+		draw();
+		
+		
+			if(!jump){
+				var imgTag1 = new Image();		
+				imgTag1.src = ingno+'.JPG' ;   // load image
+				//console.log(imgTag1.src );
+				canvasContext.drawImage(imgTag1,200, 400, 100, 100);   
+				
+				ingno = ingno +add;
+				if(ingno==4){
+					add = -1;
+					ingno=3;
+				}
+				if(ingno==0){
+					add = 1;
+					ingno=1;
+				}
+			}else{
+				var imgTag1 = new Image();		
+				imgTag1.src = 'jump.png' ;   // load image
+				//console.log(imgTag1.src );
+				var height = 400 - jumpframe *20;
+				if(height<250){
+					height = 250 + (jumpframe%15 * 10)
+				}
+				canvasContext.drawImage(imgTag1,200, height, 100, 100); 
+				jumpframe++;
+				if(jumpframe==10){
+					jumpframe =0;
+					jump=false;
+				}
+			
+			}
+			drawObstacle();
+		}else{
+			frame =frame>400?0:frame;
+		}
+		frame++;
+		
+		animate();
+	}
+	var x=0;
+	function animate() {
+	  
+		canvasContext.drawImage(imgTag,x, 500, 1263, 124);   
+		canvasContext.drawImage(imgTag,1263+x, 500, 1263, 124); 	  // draw image at current position
+		  x -= 4;
+		  if(x< -1263){
+			x=0
+		  }
+	       // loop
+	}
+	var obstaclex = 800;
+	function drawObstacle() {
+	  
+	var img2Tag = new Image();
+	img2Tag.src = "pipe.JPG";
+		canvasContext.drawImage(img2Tag,obstaclex, 425, 100, 100); 	  // draw image at current position
+	  obstaclex -= 30; ;
+	  if(obstaclex< 0){
+		obstaclex = 800;
+	  }
+	       // loop
+	}
+</script
+</html>
