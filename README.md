@@ -1,4 +1,4 @@
-# JavascriptGames
+# Fun Games using Javascript
 javascript Games
 1. Tennis Game -- tutorial
 
